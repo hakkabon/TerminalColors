@@ -38,6 +38,10 @@ extension DefaultStringInterpolation {
     ///   - value: The value to be styled and appended to the string interpolation
     ///   - color: The `TerminalColor` configuration specifying the styling to apply
     public mutating func appendInterpolation(_ value: CustomStringConvertible, color: TerminalColor) {
+        guard ANSIStyle.isColorEnabled else {
+            appendInterpolation(value.description)
+            return
+        }
         let style = ANSIStyle.escape(fg: color.fg, bg: color.bg, styles: color.styles)
         appendInterpolation("\(style)\(value)\(ANSIStyle.Style.reset.escaped)")
     }

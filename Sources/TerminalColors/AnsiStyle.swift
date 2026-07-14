@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Darwin
 
 /// A type that can be combined into a merge style sequence
 public protocol ANSIStylable {
@@ -19,6 +20,17 @@ public enum ANSIStyle {
     public static let esc = "\u{001B}["
     public static let unescape = "m"
     
+    /// Returns `true` when ANSI color output is appropriate for the current process.
+    ///
+    /// Color is disabled automatically in two situations:
+    /// - stdout is not connected to a TTY (e.g. output is being piped or redirected)
+    /// - the `NO_COLOR` environment variable is set to any value (https://no-color.org)
+    public static var isColorEnabled: Bool {
+        guard isatty(STDOUT_FILENO) != 0 else { return false }
+        guard ProcessInfo.processInfo.environment["NO_COLOR"] == nil else { return false }
+        return true
+    }
+
     /// Return an escaped sequence representing the submitted style entries
     public static func escape(_ styling: [ANSIStylable]) -> String {
         let escape = "\u{001B}["
