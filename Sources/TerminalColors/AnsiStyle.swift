@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Darwin
 
 /// A type that can be combined into a merge style sequence
 public protocol ANSIStylable {
